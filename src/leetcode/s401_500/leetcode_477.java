@@ -1,5 +1,6 @@
 package leetcode.s401_500;
-public class leetcode_461 {
+
+public class leetcode_477 {
 
     public int hammingDistance(int x, int y) {
 
@@ -46,10 +47,18 @@ public class leetcode_461 {
         return count;
     }
 
-    public static void main(String[] args) {
-        leetcode_461 t = new leetcode_461();
+    public int totalHammingDistance(int[] nums) {
 
-//        System.out.println(t.hammingDistance(4, 10));
-        System.out.println(t.hammingDistance(3, 1));
+        int sum = 0;
+        for(int i=0;i<nums.length;i++) {
+            for(int j=i+1;j<nums.length;j++) {
+                sum += hammingDistance(nums[i], nums[j]);
+            }
+        }
+        return sum;
+    }
+
+    public static void main(String[] args) {
+        leetcode_477 t = new leetcode_477();
     }
 }
