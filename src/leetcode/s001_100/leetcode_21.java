@@ -1,6 +1,4 @@
-package leetcode.s01_100;
-
-import leetcode.s01_100.leetcode_21.ListNode;
+package leetcode.s001_100;
 
 public class leetcode_21 {
 
