@@ -1,46 +1,55 @@
 package leetcode.s0101_200;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 
 public class leetcode_155 {
 
-
     class MinStack {
 
-        LinkedList<Integer> data;
-        LinkedList<Integer> minData;
+        class Element {
+            int val;
+            int minValue;
+
+            Element(int v, int m) {
+                this.val = v;
+                this.minValue = m;
+            }
+
+        }
+
+        ArrayList<Element> data;
+        int size;
 
         /** initialize your data structure here. */
         public MinStack() {
-            this.data = new LinkedList<>();
-            this.minData = new LinkedList<>();
+            data = new ArrayList<>();
+            size = 0;
+        }
+
+        public boolean isEmpty() {
+            return this.size == 0;
         }
 
         public void push(int x) {
-            if(!this.data.isEmpty()) {
-                if(x<this.minData.peek()) {
-                    this.minData.push(x);
-                }
+            if(this.isEmpty()) {
+                this.data.add(new Element(x, x));
             } else {
-                this.minData.push(x);
+                this.data.add(new Element(x, Math.min(this.getMin(), x)));
             }
-
-            this.data.push(x);
+            this.size++;
         }
 
         public void pop() {
-            int i = this.data.pop();
-            if(this.minData.peek() == i) {
-                this.minData.pop();
-            }
+            this.data.remove(size-1);
+            this.size--;
         }
 
         public int top() {
-            return this.data.peek();
+            return this.data.get(size-1).val;
         }
 
         public int getMin() {
-            return this.minData.peek();
+            return this.data.get(size-1).minValue;
         }
     }
 
