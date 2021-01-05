@@ -12,78 +12,16 @@ public class leetcode_347 {
         }
     }
 
-    class Element {
-        int val;
-        int key;
-        Element(int k, int v) {
-            this.key = k;
-            this.val = v;
-        }
-    }
-
-    class CustomQueue {
-        ArrayList<Element> data;
-
-        CustomQueue() {
-            this.data = new ArrayList<>();
+    class QueueComparator implements Comparator<Integer> {
+        HashMap<Integer, Integer> h;
+        QueueComparator(HashMap<Integer, Integer> a) {
+            h = a;
         }
 
-        public void upHeap() {
-            int i = this.data.size() - 1;
-            while (i>0) {
-                int p = Parent(i);
-                Element parent = this.data.get(p);
-                Element current = this.data.get(i);
 
-                if(parent.key < current.key) {
-                    this.data.set(p, current);
-                    this.data.set(i, parent);
-                }
-
-                i = p;
-            }
-        }
-
-        public void downHeap(int i) {
-            while (hasLeft(i)) {
-                int l = Left(i);
-                Element maxElement = this.data.get(l);
-
-                if(hasRight(i)) {
-                    int r = Right(i);
-                    Element rightElement = this.data.get(r);
-                    if(rightElement.key > maxElement.key) {
-                        maxElement = rightElement;
-                        l = r;
-                    }
-                }
-
-                Element current = this.data.get(i);
-                if(current.key < maxElement.key) {
-                    this.data.set(l, current);
-                    this.data.set(i, maxElement);
-                }
-                i = l;
-            }
-        }
-
-        public int pop() {
-            Element current = this.data.get(0);
-            this.data.set(0, this.data.get(this.data.size()-1));
-            this.data.remove(this.data.size()-1);
-            this.downHeap(0);
-            return current.val;
-        }
-
-        public int Parent(int i) {return i/2;}
-        public int Left(int i) {return 2*i+1;}
-        public int Right(int i) {return 2*i+2;}
-        public boolean hasLeft(int i) { return Left(i)<this.data.size();}
-        public boolean hasRight(int i) { return Right(i)<this.data.size();}
-
-        public void insert(Element e) {
-            this.data.add(e);
-            this.upHeap();
+        @Override
+        public int compare(Integer o1, Integer o2) {
+            return h.get(o1).compareTo(h.get(o2));
         }
     }
 
@@ -93,13 +31,17 @@ public class leetcode_347 {
             h.put(i, h.getOrDefault(i, 0)+1);
         }
 
-        CustomQueue q = new CustomQueue();
-        for(Map.Entry<Integer, Integer> m: h.entrySet()) {
-            q.insert(new Element(m.getKey(), m.getValue()));
+        PriorityQueue<Integer> q = new PriorityQueue<>(new QueueComparator(h));
+        for(Map.Entry<Integer, Integer> a: h.entrySet()) {
+            q.add(a.getKey());
+            if(q.size() > k) {
+                q.poll();
+            }
         }
+
         int[] a = new int[k];
         for(int i=0;i<a.length;i++) {
-            a[i] = q.pop();
+            a[i] = q.poll();
         }
         return a;
     }
