@@ -20,38 +20,32 @@ public class leetcode_79 {
     }
 
 
-    public boolean dfs(char[][] board, int r, int c, StringBuilder s, String word, int index) {
-        // constraint
-        if(s.toString().equals(word)) {
-//            System.out.println(s.toString());
-            return true;
-        }
+    public boolean dfs(char[][] board, int r, int c, String word, int index) {
         if(r<0 || c<0 || r>=board.length || c>=board[0].length) {
             return false;
         }
 
         if(index >= word.length()) {
-            return false;
+            return true;
         }
         if(board[r][c] != word.charAt(index)) {
             return false;
         }
-
-        s.append(board[r][c]);
         char ch = board[r][c];
 
         board[r][c] = '#';
 
-
-        boolean down = dfs(board, r+1, c, s, word, index+1);
-        boolean up = dfs(board, r-1, c, s, word, index+1);
-        boolean right = dfs(board, r, c+1, s, word, index+1);
-        boolean left = dfs(board, r, c-1, s, word, index+1);
-
+        int[] x = new int[] {-1, 1, 0, 0};
+        int[] y = new int[] {0, 0, 1, -1};
+        boolean ret = false;
+        for(int i=0;i<x.length;i++) {
+            ret = dfs(board, r+x[i], c+y[i], word, index+1);
+            if(ret) {
+                break;
+            }
+        }
         board[r][c] = ch;
-        s.deleteCharAt(s.length()-1);
-
-        return (left || right || up || down);
+        return ret;
     }
 
 
@@ -66,12 +60,10 @@ public class leetcode_79 {
         int row = board.length;
         int col = board[0].length;
 
-//        dfs(board, 1, 1, new StringBuilder(), word, 0);
-
         for(int i=0;i<row;i++) {
             for(int j=0;j<col;j++) {
                 if(board[i][j] == word.charAt(0)) {
-                    boolean status = dfs(board, i, j, new StringBuilder(), word, 0);
+                    boolean status = dfs(board, i, j, word, 0);
                     if(status) {
                         return status;
                     }
@@ -82,7 +74,7 @@ public class leetcode_79 {
     }
 
 
-    public static void main(String[] args) {
+    public static void m31ain(String[] args) {
         leetcode_79 t = new leetcode_79();
         t.solve();
     }

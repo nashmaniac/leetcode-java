@@ -12,82 +12,61 @@ public class leetcode_545 {
         TreeNode left;
     }
 
-    public int findHeight(TreeNode root) {
-        if(root == null) {
-            return 0;
-        }
+    ArrayList<Integer> arr;
+    Stack<Integer> stack;
 
-        return 1+ Math.max(findHeight(root.left), findHeight(root.right));
-    }
-
-
-    class Elem {
-        TreeNode node;
-        int level;
-        Elem(TreeNode node, int level) {
-
-        }
-    }
-
-    public void BFS(TreeNode root, ArrayList<Integer>[] arr, ArrayList<Integer> a) {
+    public void gatherLeftNode(TreeNode root) {
         if(root == null) {
             return;
         }
-        Queue<Elem> q = new LinkedList<>();
-        q.offer(new Elem(root, 0));
-        while (q.isEmpty()) {
-            Elem node = q.poll();
-            arr[node.level].add(node.node.val);
+        arr.add(root.val);
+        if(root.left != null ) {
+            gatherLeftNode(root.left);
+        } else {
+            gatherLeftNode(root.right);
+        }
+    }
 
-            if(node.node.left != null) {
-                q.offer(new Elem(node.node.left, node.level+1));
-            }
-            if(node.node.right != null) {
-                q.offer(new Elem(node.node.right, node.level+1));
-            }
-
-            if(node.node.left == null && node.node.right == null) {
-                a.add(node.node.val);
-            }
+    public void gatherLeaves(TreeNode root) {
+        if(root == null) {
+            return;
+        }
+        if(root.left == null && root.right == null) {
+            arr.add(root.val);
         }
 
+        gatherLeaves(root.left);
+        gatherLeaves(root.right);
     }
-    
+
+    public void gatherRightNode(TreeNode root) {
+        if(root == null) {
+            return;
+        }
+        stack.push(root.val);
+
+        if(root.right != null) {
+            gatherRightNode(root.right);
+        } else {
+            gatherRightNode(root.left);
+        }
+    }
 
     public List<Integer> boundaryOfBinaryTree(TreeNode root) {
-        int h = findHeight(root);
+        arr = new ArrayList<>();
+        stack = new Stack<>();
+        if(root != null) {
+            arr.add(root.val);
+            gatherLeftNode(root.left);
+            gatherLeaves(root.left);
+            gatherLeaves(root.right);
+            gatherRightNode(root.right);
 
-        ArrayList<Integer> a = new ArrayList<>();
-        ArrayList<Integer>[] arr = new ArrayList[h];
-
-
-        for(int i=0;i<h;i++) {
-            arr[i] = new ArrayList<>();
-        }
-
-        BFS(root, arr, a);
-
-        for(int i=0;i<arr.length;i++) {
-            if(!arr[i].isEmpty()) {
-                a.add(arr[i].get(0));
-                a.add(arr[i].get(arr[i].size()-1));
+            while (!stack.isEmpty()) {
+                arr.add(stack.pop());
             }
         }
-
-        Collections.sort(a);
-        if(!a.isEmpty()){
-            int count = 0;
-            for(int i=1;i<a.size();i++) {
-                if(a.get(i) != a.get(i-1)) {
-                    count++;
-                    a.set(count, a.get(i));
-                }
-            }
-            for(int i=a.size()-1;i>count;i++) {
-                a.remove(a.size()-1);
-            }
-        }
-        return a;
+        return arr;
     }
 
     public static void main(String[] args) {
